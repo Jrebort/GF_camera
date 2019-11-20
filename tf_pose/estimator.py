@@ -11,7 +11,7 @@ import time
 from tf_pose import common
 from tf_pose.common import CocoPart
 from tf_pose.tensblur.smoother import Smoother
-import tensorflow.contrib.tensorrt as trt
+#import tensorflow.contrib.tensorrt as trt
 
 try:
     from tf_pose.pafprocess import pafprocess
@@ -311,21 +311,6 @@ class TfPoseEstimator:
         with tf.gfile.GFile(graph_path, 'rb') as f:
             graph_def = tf.GraphDef()
             graph_def.ParseFromString(f.read())
-
-        if trt_bool is True:
-            output_nodes = ["Openpose/concat_stage7"]
-            graph_def = trt.create_inference_graph(
-                graph_def,
-                output_nodes,
-                max_batch_size=1,
-                max_workspace_size_bytes=1 << 20,
-                precision_mode="FP16",
-                # precision_mode="INT8",
-                minimum_segment_size=3,
-                is_dynamic_op=True,
-                maximum_cached_engines=int(1e3),
-                use_calibration=True,
-            )
 
         self.graph = tf.get_default_graph()
         tf.import_graph_def(graph_def, name='TfPoseEstimator')
