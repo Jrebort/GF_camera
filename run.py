@@ -9,9 +9,9 @@ from PIL import Image
 import cv2
 import numpy as np
 
-from list_process import TransData
-from find_nearest import ComputeDistance
-from gen_guide import GenGuide
+from encode import TransData
+from recommendation import ComputeDistance
+from guide import GenGuide
 
 from tf_pose import common
 from tf_pose.estimator import TfPoseEstimator
