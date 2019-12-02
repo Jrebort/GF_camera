@@ -2,9 +2,45 @@ import numpy as np
 import sys
 from decimal import Decimal
 
+from list_process import TransData
+
 #Generating new coordinate of specified keypoint.
 #And calculate the distance between new pose and recommend pose.
 class GenGuide:
+    
+    def gen_guide(self,_dis,recmd_body_group,coor_point,points_group):
+        #if coor_point exist, generate the guiding of current pose.
+        if coor_point!=0:
+            #generate predefined coordinate by shifing the position of right wrist.
+            #new_coor: list of tuple '[(x,y),...,(x,y)]',which length=8
+            new_coor = self.gen_new_coor(coor_point)
+
+            #Ensuring the RWrist is not at the boundary of frame.
+            if new_coor == False:
+                pass
+            else:
+                #replace the 4-th element of human_list with new_coor[i]
+                #Newly assembled keypoints group: new_body (2-d list), list_length=8
+                #new_body:[[x,y,...,x,y],...,[x,y,...,x,y]]
+                new_body = []
+                for i in range(len(new_coor)):
+                    points_group[4] = new_coor[i]
+                    obj_class_trans = TransData()
+                    new_body.append(obj_class_trans.process(points_group))
+
+                #calculate the distance between each new group of keypoints and recommend pose keypoints.
+                list_dis = self.cal_new_dis(recmd_body_group,new_body)
+                min_dis = min(list_dis)
+
+                #while new generated pose get closer with recmd_body, show the guiding arrowedline.
+                #arrowedline:direction from current position to new position of right wrist.
+                if min_dis < _dis:
+                    dst_coor = new_coor[list_dis.index(min(list_dis))]
+                    return dst_coor
+                else:
+                    return False
+        else:
+            return False
     
     def gen_new_coor(self,old_cor):
         tup_list = []
