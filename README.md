@@ -1,4 +1,4 @@
-# GF_camera
+# GFCamera
 
 ## Install
 
