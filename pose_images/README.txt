@@ -1,0 +1,1 @@
+#database dirs save the pose images.
