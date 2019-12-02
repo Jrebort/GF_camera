@@ -2,7 +2,7 @@ import numpy as np
 import sys
 from decimal import Decimal
 
-from list_process import TransData
+from encode import TransData
 
 #Generating new coordinate of specified keypoint.
 #And calculate the distance between new pose and recommend pose.
