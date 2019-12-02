@@ -49,6 +49,7 @@ def fun_load_param():
     parser.add_argument('--poseimg', type=str, default='./pose_images/')
     parser.add_argument('--scaleX', type=float, default=0.24,help='width scaling ratio of pasted pose image')
     parser.add_argument('--scaleY', type=float, default=0.27,help='height scaling ratio of pasted pose image')
+    parser.add_argument('--guidePT', type=int, default=4)
     parser.add_argument('--camera', type=int, default=0)
     parser.add_argument('--resize', type=str, default='0x0',help='if provided, resize images before they are processed. default=0x0, Recommends : 432x368 or 656x368 or 1312x736 ')
     parser.add_argument('--resize-out-ratio', type=float, default=4.0,help='if provided, resize heatmaps before they are post-processed. default=1.0')
@@ -92,7 +93,7 @@ if __name__ == '__main__':
         humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=args.resize_out_ratio)
         
         human_list = []
-        RWrist = 0
+        guidePT = 0
 
         #get only one group of human body keypoints.
         for human in humans:
@@ -105,8 +106,8 @@ if __name__ == '__main__':
                 #reduction the detected keypoints and save as tuple:(x,y)
                 center = (int(body_part.x * w + 0.5), int(body_part.y * h + 0.5))
                 #remember the right Wrist coordinate
-                if i == 4:
-                    RWrist = center
+                if i == args.guidePT:
+                    guidePT = center
                 #save tuple of keypoint to list:[(x,y),...,(x,y)]
                 human_list.append(center)
             break
@@ -137,34 +138,12 @@ if __name__ == '__main__':
         #Get recmd_body coordinate group
         recmd_body_group = load_data[index_minValue]
 
-        #if right wrist exist, generate the guiding of current pose.
-        if RWrist!=0:
-            #generate predefined coordinate by shifing the position of right wrist.
-            #new_coor: list of tuple '[(x,y),...,(x,y)]',which length=8
-            new_coor = obj_class_guide.gen_new_coor(RWrist)
-
-            #Ensuring the RWrist is not at the boundary of frame.
-            if new_coor == False:
-                pass
-            else:
-                #replace the 4-th element of human_list with new_coor[i]
-                #Newly assembled keypoints group: new_body (2-d list), list_length=8
-                #new_body:[[x,y,...,x,y],...,[x,y,...,x,y]]
-                new_body = []
-                for i in range(len(new_coor)):
-                    human_list[4] = new_coor[i]
-                    obj_class_trans = TransData()
-                    new_body.append(obj_class_trans.process(human_list))
-
-                #calculate the distance between each new group of keypoints and recommend pose keypoints.
-                list_dis = obj_class_guide.cal_new_dis(recmd_body_group,new_body)
-                min_dis = min(list_dis)
-
-                #while new generated pose get closer with recmd_body, show the guiding arrowedline.
-                #arrowedline:direction from current position to new position of right wrist.
-                if min_dis < _dis:
-                    dst_coor = new_coor[list_dis.index(min(list_dis))]
-                    cv2.arrowedLine(image, RWrist, dst_coor, (0,0,255),5,8,0,0.25)
+        #Generating guiding of specified keypoint.
+        res_guide = obj_class_guide.gen_guide(_dis,recmd_body_group,guidePT,human_list)
+        if res_guide!=False:
+            cv2.arrowedLine(image, guidePT, res_guide, (0,0,255),5,8,0,0.25)
+        else:
+            pass
 
         #render the recommend pose image to the bottom-right corner of frame.
         markImg = cv2.imread(args.poseimg+imgID)
