@@ -1,0 +1,43 @@
+class CocoPart(Enum):
+    Nose = 0
+    Neck = 1
+    RShoulder = 2
+    RElbow = 3
+    RWrist = 4
+    LShoulder = 5
+    LElbow = 6
+    LWrist = 7
+    RHip = 8
+    RKnee = 9
+    RAnkle = 10
+    LHip = 11
+    LKnee = 12
+    LAnkle = 13
+    REye = 14
+    LEye = 15
+    REar = 16
+    LEar = 17
+    Background = 18
+
+CocoPairs = [
+    (1, 2), # 右肩，
+    (1, 5), # 左肩，
+    (2, 3), # 右肘，
+    (3, 4), # 右腕
+    (5, 6), # 左肘
+    (6, 7), # 左腕
+    (1, 8), # 右臀
+    (8, 9), # 右膝盖
+    (9, 10), # 右脚踝
+    (1, 11), # 左臀
+    (11, 12), # 左膝盖
+    (12, 13), # 左脚踝
+    (1, 0), # 鼻子
+    (0, 14), # 右眼
+    (14, 16), # 右耳
+    (0, 15), # 左眼
+    (15, 17), # 左耳
+    (2, 16),
+    (5, 17)
+]   # = 19
+CocoPairsRender = CocoPairs[:-2]
