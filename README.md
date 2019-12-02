@@ -45,6 +45,10 @@ $ git clone https://github.com/Jrebort/GF_camera
 $ cd GF_camera
 $ python setup.py install  # Or, `pip install -e .`
 ```
+### pre-process images of pose
+We provide a dataset of pose which is pre-process by our estimator.
+You can get it at: https://pan.baidu.com/s/1A3nLiz8shgcQWxvSQxptaw
+Then unzip it in path: './pose_images/'
 
 ## Inference
 ### Realtime Process
