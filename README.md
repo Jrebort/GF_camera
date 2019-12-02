@@ -65,7 +65,7 @@ CMU's model graphs are too large for git, so I uploaded them on an external clou
 $ cd models/graph/cmu
 $ bash download.sh
 ```
-### Realtime Process
+## Realtime Process
 ```
 $ python run.py --model=mobilenet_thin --resize=432x368 --camera=0
 ```
@@ -76,3 +76,6 @@ $ python run.py --model=mobilenet_thin --resize=432x368 --camera=0 --tensorrt=Tr
 ```
 
 Then you will see the realtime webcam screen with estimated poses as below. This [Realtime Result](./etcs/openpose_macbook13_mobilenet2.gif) was recored on macbook pro 13" with 3.1Ghz Dual-Core CPU.
+
+## KeyPoints schematic diagram
+![cmu-model](/KeyPointsDisplay.png)
