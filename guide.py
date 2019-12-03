@@ -8,12 +8,12 @@ from encode import TransData
 #And calculate the distance between new pose and recommend pose.
 class GenGuide:
     
-    def gen_guide(self,_dis,recmd_body_group,coor_point,points_group):
+    def gen_guide(self,arg_shift,_dis,recmd_body_group,coor_point,points_group):
         #if coor_point exist, generate the guiding of current pose.
         if coor_point!=0:
             #generate predefined coordinate by shifing the position of right wrist.
             #new_coor: list of tuple '[(x,y),...,(x,y)]',which length=8
-            new_coor = self.gen_new_coor(coor_point)
+            new_coor = self.gen_new_coor(coor_point,arg_shift)
 
             #Ensuring the RWrist is not at the boundary of frame.
             if new_coor == False:
@@ -42,18 +42,18 @@ class GenGuide:
         else:
             return False
     
-    def gen_new_coor(self,old_cor):
+    def gen_new_coor(self,old_cor,arg_shift):
         tup_list = []
-        if (old_cor[0]-40)<=1 or (old_cor[0]+40)>=639 or (old_cor[1]-40)<=1 or (old_cor[1]+40)>=479:
+        if (old_cor[0]-arg_shift)<=1 or (old_cor[0]+arg_shift)>=639 or (old_cor[1]-arg_shift)<=1 or (old_cor[1]+arg_shift)>=479:
             return False
-        Lmove = (old_cor[0]-40,old_cor[1])
-        Rmove = (old_cor[0]+40,old_cor[1])
-        Umove = (old_cor[0],old_cor[1]-40)
-        Dmove = (old_cor[0],old_cor[1]+40)
-        LUmove = (old_cor[0]-40,old_cor[1]-40)
-        RUmove = (old_cor[0]+40,old_cor[1]-40)
-        LDmove = (old_cor[0]-40,old_cor[1]+40)
-        RDmove = (old_cor[0]+40,old_cor[1]+40)
+        Lmove = (old_cor[0]-arg_shift,old_cor[1])
+        Rmove = (old_cor[0]+arg_shift,old_cor[1])
+        Umove = (old_cor[0],old_cor[1]-arg_shift)
+        Dmove = (old_cor[0],old_cor[1]+arg_shift)
+        LUmove = (old_cor[0]-arg_shift,old_cor[1]-arg_shift)
+        RUmove = (old_cor[0]+arg_shift,old_cor[1]-arg_shift)
+        LDmove = (old_cor[0]-arg_shift,old_cor[1]+arg_shift)
+        RDmove = (old_cor[0]+arg_shift,old_cor[1]+arg_shift)
         tup_list.extend([Lmove,Rmove,Umove,Dmove,LUmove,RUmove,LDmove,RDmove])
         #tup_list.extend([Lmove,Rmove,Umove,Dmove])
         return tup_list
